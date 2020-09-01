@@ -1,0 +1,114 @@
+// ~->[DNET-1]->~
+
+// File created by someone at MonashU using Netica 6.05 on Jun 08, 2020 at 23:12:05 UTC.
+
+bnet LawnGrow {
+AutoCompile = TRUE;
+autoupdate = TRUE;
+whenchanged = 1591657189;
+
+visual V1 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	ShowLinkStrengths = 1;
+	windowposn = (120, 78, 1156, 557);
+	resolution = 72;
+	drawingbounds = (1515, 734);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00e1e1e1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00f8eed2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00d3caa6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00c8c8c8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00ffffb4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00ffbdbd;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00dee8ff;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00f0fafa;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00ffffff;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node Frost {
+	discrete = TRUE;
+	states = (True, False);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = ();
+	probs = 
+		// True         False        
+		  (0.2,         0.8);
+	whenchanged = 1591655769;
+	belief = (0.2, 0.8);
+	visual V1 {
+		center = (198, 114);
+		height = 1;
+		};
+	};
+
+node Rain {
+	discrete = TRUE;
+	states = (True, False);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = ();
+	probs = 
+		// True         False        
+		  (0.1,         0.9);
+	whenchanged = 1591657151;
+	belief = (0.1, 0.9);
+	visual V1 {
+		center = (612, 120);
+		height = 2;
+		};
+	};
+
+node WaterRestriction {
+	discrete = TRUE;
+	states = (True, False);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = (Rain);
+	probs = 
+		// True         False         // Rain  
+		  (0.01,        0.99,         // True  
+		   0.8,         0.2);         // False ;
+	whenchanged = 1591657189;
+	belief = (0.721, 0.279);
+	visual V1 {
+		center = (612, 306);
+		height = 4;
+		};
+	};
+
+node LawnGrow {
+	discrete = TRUE;
+	states = (True, False);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = (Frost, Rain, WaterRestriction);
+	probs = 
+		// True         False         // Frost Rain  WaterRestriction 
+		  (0.9,         0.1,          // True  True  True             
+		   0.9,         0.1,          // True  True  False            
+		   0,           1,            // True  False True             
+		   0.8,         0.2,          // True  False False            
+		   1,           0,            // False True  True             
+		   1,           0,            // False True  False            
+		   0.02,        0.98,         // False False True             
+		   0.9,         0.1);         // False False False            ;
+	whenchanged = 1591657056;
+	belief = (0.26792, 0.73208);
+	visual V1 {
+		center = (324, 306);
+		height = 3;
+		};
+	};
+ElimOrder = (Frost, Rain, WaterRestriction, LawnGrow);
+};
